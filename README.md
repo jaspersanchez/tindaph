@@ -22,7 +22,7 @@ E-commerce platform for the Philippine market with local payment methods and Phi
 ### MVP (Week 1)
 
 - [x] Project setup
-- [ ] User authentication (register/login)
+- [x] User authentication (register/login)
 - [ ] Product listings
 - [ ] Shopping cart
 - [ ] Checkout flow
