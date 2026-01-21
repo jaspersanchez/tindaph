@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth";
+import productRoutes from "./routes/products";
 
 dotenv.config();
 
@@ -15,13 +16,13 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.json({
     message: "TindaPH API is running! 🚀",
     status: "success",
-    timestamp: new Date().toISOString(),
   });
 });
 
