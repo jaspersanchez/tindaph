@@ -1,5 +1,6 @@
 import type { Product } from "../types";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 
 interface ProductCardProps {
   product: Product;
@@ -7,15 +8,21 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product }: ProductCardProps) => {
   const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
 
   const formatPrice = (price: number) => {
     return `₱${price.toLocaleString("en-PH")}`;
   };
 
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation to product detail
+    addToCart(product);
+  };
+
   return (
     <div
       onClick={() => navigate(`/products/${product._id}`)}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col"
     >
       {/* Image */}
       <div className="relative h-48 bg-gray-200">
@@ -43,7 +50,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         {/* Category */}
         <span className="text-xs text-blue-600 font-medium">
           {product.category}
@@ -55,7 +62,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+        <p className="text-sm text-gray-600 mt-2 line-clamp-2 flex-1">
           {product.description}
         </p>
 
@@ -68,6 +75,25 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </span>
         </div>
+
+        {/* Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          disabled={product.stock === 0}
+          className={`mt-4 w-full py-2 rounded-lg font-semibold transition-colors ${
+            product.stock === 0
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : isInCart(product._id)
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
+        >
+          {product.stock === 0
+            ? "Out of Stock"
+            : isInCart(product._id)
+              ? "✓ In Cart"
+              : "Add to Cart"}
+        </button>
 
         {/* Seller */}
         <div className="mt-3 pt-3 border-t border-gray-200">

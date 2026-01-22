@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
+import { CartDrawer } from "../components/CartDrawer";
 
 export const Home = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { getItemCount } = useCart();
   const navigate = useNavigate();
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   if (!isAuthenticated) {
     return (
@@ -32,6 +37,8 @@ export const Home = () => {
     );
   }
 
+  const cartCount = getItemCount();
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navbar */}
@@ -52,6 +59,19 @@ export const Home = () => {
             </button>
           </div>
           <div className="flex items-center gap-4">
+            {/* Cart Button */}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative p-2 text-gray-700 hover:text-blue-600"
+            >
+              <span className="text-2xl">🛒</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
             <span className="text-gray-700">
               Welcome, <span className="font-semibold">{user?.name}</span>
             </span>
@@ -87,12 +107,24 @@ export const Home = () => {
             <p className="text-gray-600 text-sm">View all available products</p>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-md">
+          <div
+            onClick={() => setIsCartOpen(true)}
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
             <div className="text-4xl mb-3">🛒</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
               Shopping Cart
+              {cartCount > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {cartCount}
+                </span>
+              )}
             </h3>
-            <p className="text-gray-600 text-sm">Coming in Day 6</p>
+            <p className="text-gray-600 text-sm">
+              {cartCount > 0
+                ? `${cartCount} items in cart`
+                : "Your cart is empty"}
+            </p>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -104,6 +136,9 @@ export const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 };

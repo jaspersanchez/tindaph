@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { getProducts } from "../services/api";
 import type { Product, Category } from "../types";
 import { ProductCard } from "../components/ProductCard";
+import { CartDrawer } from "../components/CartDrawer";
+import { useCart } from "../contexts/CartContext";
 
 const categories: Category[] = [
   "Electronics",
@@ -21,6 +23,10 @@ export const Products = () => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const { getItemCount } = useCart();
+  const cartCount = getItemCount();
 
   useEffect(() => {
     loadProducts();
@@ -67,11 +73,29 @@ export const Products = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
+      {/* Header with Cart */}
       <div className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Browse Products</h1>
-          <p className="text-gray-600 mt-1">Find the best deals in TindaPH</p>
+        <div className="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Browse Products
+            </h1>
+            <p className="text-gray-600 mt-1">Find the best deals in TindaPH</p>
+          </div>
+
+          {/* Cart Button */}
+          <button
+            onClick={() => setIsCartOpen(true)}
+            className="relative bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold flex items-center gap-2"
+          >
+            <span className="text-xl">🛒</span>
+            <span>Cart</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -187,6 +211,9 @@ export const Products = () => {
           </>
         )}
       </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </div>
   );
 };

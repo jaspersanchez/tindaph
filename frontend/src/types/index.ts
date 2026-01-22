@@ -23,7 +23,6 @@ export interface LoginData {
   password: string;
 }
 
-// NEW: Product types
 export interface Product {
   _id: string;
   name: string;
@@ -49,3 +48,9 @@ export type Category =
   | "Books & Media"
   | "Toys & Games"
   | "Other";
+
+// NEW: Cart types
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
