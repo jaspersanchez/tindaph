@@ -22,3 +22,30 @@ export interface LoginData {
   email: string;
   password: string;
 }
+
+// NEW: Product types
+export interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  images: string[];
+  stock: number;
+  seller: string;
+  sellerName: string;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type Category =
+  | "Electronics"
+  | "Fashion"
+  | "Home & Living"
+  | "Health & Beauty"
+  | "Food & Beverages"
+  | "Sports & Outdoors"
+  | "Books & Media"
+  | "Toys & Games"
+  | "Other";

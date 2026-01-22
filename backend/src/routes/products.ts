@@ -33,6 +33,25 @@ router.get("/", async (req, res: Response) => {
   }
 });
 
+// GET seller's own products (seller only)
+router.get(
+  "/seller/my-products",
+  authMiddleware,
+  sellerOnly,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const products = await Product.find({ seller: req.user?.userId })
+        .sort("-createdAt")
+        .select("-__v");
+
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching seller products:", error);
+      res.status(500).json({ message: "Error fetching products", error });
+    }
+  },
+);
+
 // GET single product (public)
 router.get("/:id", async (req, res: Response) => {
   try {
@@ -167,25 +186,6 @@ router.delete(
     } catch (error) {
       console.error("Error deleting product:", error);
       res.status(500).json({ message: "Error deleting product", error });
-    }
-  },
-);
-
-// GET seller's own products (seller only)
-router.get(
-  "/seller/my-products",
-  authMiddleware,
-  sellerOnly,
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const products = await Product.find({ seller: req.user?.userId })
-        .sort("-createdAt")
-        .select("-__v");
-
-      res.json(products);
-    } catch (error) {
-      console.error("Error fetching seller products:", error);
-      res.status(500).json({ message: "Error fetching products", error });
     }
   },
 );
